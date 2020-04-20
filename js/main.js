@@ -9,10 +9,10 @@ let snake = [
 let direction = 'E'
 
 document.body.onkeydown = function (event) {
-    if (event.key == 'ArrowUp') direction = "N"
-    else if (event.key == "ArrowDown") direction = 'S'
-    else if (event.key == "ArrowRight") direction = "E"
-    else if (event.key == "ArrowLeft") direction = "W"
+    if (event.key == 'ArrowUp' && direction != "S") direction = "N"
+    else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
+    else if (event.key == "ArrowRight" && direction != "W") direction = "E"
+    else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
     else return
     moveSnake()
     drawChessBoard()
