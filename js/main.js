@@ -4,6 +4,12 @@ const ctx = canvas.getContext('2d')
 const tick = 200
 
 let score = 0
+let record = 0
+if (localStorage.getItem('record') !== null) {
+    recordSpan.innerText = localStorage.getItem('record')
+} else {
+    localStorage.setItem('record', 0)
+}
 
 let interval
 
@@ -49,7 +55,7 @@ function drawChessBoard() {
 
 function drawSnake() {
     ctx.fillStyle = "green"
-    for (let i = 0; i < snake.length; i++) {
+    for (let i = 0; i < snake.length - 1; i++) {
         ctx.fillRect(snake[i][0] * side, snake[i][1] * side, side, side)
     }
     ctx.fillStyle = "#2c612f"
@@ -79,6 +85,7 @@ function moveSnake() {
         snake.push(newHead)
         generateApple()
         scoreSpan.innerText = ++score
+        checkScore()
     }
 }
 
@@ -99,6 +106,13 @@ function checkCollision(head) {
     if (head[0] < 0 || head[0] == rowSize || head[1] < 0 || head[1] == rowSize) return 'border'
     if (head.join() == apple.join()) return 'apple'
     return 'empty'
+}
+
+function checkScore() {
+    if (localStorage.getItem('record') < score) {
+        localStorage.setItem('record', score)
+        recordSpan.innerText = localStorage.getItem('record')
+    }
 }
 
 drawChessBoard()
