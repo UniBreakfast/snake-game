@@ -2,6 +2,7 @@ const rowSize = 20
 const side = canvas.width / rowSize
 const ctx = canvas.getContext('2d')
 const tick = 200
+
 let score = 0
 
 let interval
@@ -9,6 +10,8 @@ let interval
 let snake = [
     [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2]
 ]
+
+// let snakeHead = [snake[5][0], snake[5][1]]
 
 let direction = 'E'
 
@@ -49,6 +52,8 @@ function drawSnake() {
     for (let i = 0; i < snake.length; i++) {
         ctx.fillRect(snake[i][0] * side, snake[i][1] * side, side, side)
     }
+    ctx.fillStyle = "#2c612f"
+    ctx.fillRect(snake[snake.length - 1][0] * side, snake[snake.length - 1][1] * side, side, side)
 }
 
 function moveSnake() {
