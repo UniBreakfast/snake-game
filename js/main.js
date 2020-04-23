@@ -98,7 +98,7 @@ function generateApple() {
 
 function drawApple() {
     ctx.fillStyle = "red"
-    ctx.fillRect(apple[0] * side, apple[1] * side, side, side)
+    ctx.fillRect(apple[0] * side + 3, apple[1] * side + 3, side - 6, side - 6)
 }
 
 function checkCollision(head) {
