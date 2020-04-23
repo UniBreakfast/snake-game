@@ -40,12 +40,12 @@ document.body.onkeydown = function (event) {
 
 function drawChessBoard() {
     ctx.clearRect(0, 0, 500, 500)
-    let color = "#ffffff"
+    let color = "#AAD751"
 
     for (let i = 0; i < rowSize; i++) {
-        ctx.fillStyle = color = color == "#e1e1e1" ? "#ffffff" : "#e1e1e1"
+        ctx.fillStyle = color = color == "#a2d149" ? "#AAD751" : "#a2d149"
         for (let j = 0; j < rowSize; j++) {
-            ctx.fillStyle = ctx.fillStyle == "#e1e1e1" ? "#ffffff" : "#e1e1e1"
+            ctx.fillStyle = ctx.fillStyle == "#a2d149" ? "#AAD751" : "#a2d149"
             ctx.fillRect(i * side, j * side, side, side)
         }
     }

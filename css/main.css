@@ -7,10 +7,13 @@ body {
     align-items: center;
     height: 100vh;
     flex-direction: column;
+    background: #4A752C;
+    color: #ffffff;
 }
 
 canvas {
-    border: 1px solid #e1e1e1;
+    border: 1px solid #578a34;
+    /* background: #aad751; */
 }
 
 header {
