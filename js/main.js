@@ -12,13 +12,15 @@ if (localStorage.getItem('record') !== null) {
 
 let interval
 
+const history = []
+
 let snake = [
     [2, 2], [3, 2], [4, 2], [5, 2]
 ]
 
 const directions = ['E', 'W', 'S', 'N']
 
-let direction = 'E'
+let direction
 
 let apple = []
 
@@ -42,12 +44,13 @@ boardWidth.onchange = () => {
 }
 
 document.body.onkeydown = function (event) {
-    if (event.key == 'ArrowUp' && direction != "S") direction = "N"
+    if (event.key == 'ArrowUp' && (direction != "S" || !direction)) direction = "N"
     else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
     else if (event.key == "ArrowRight" && direction != "W") direction = "E"
     else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
     else return
     if (!interval) interval =  setInterval(() => {
+        history.push({snake: snake.slice(), apple: apple.slice()})
         moveSnake()
         drawChessBoard()
         drawSnake()
@@ -96,7 +99,7 @@ function moveSnake() {
         interval = 0
         setTimeout(() => {
             alert('Вы проиграли!')
-            location.reload()
+            replay()
         }, 500)
     } else {
         snake.push(newHead)
@@ -104,6 +107,22 @@ function moveSnake() {
         scoreSpan.innerText = ++score
         checkScore()
     }
+}
+
+function replay() {
+    let interval = setInterval(() => {
+        const state = history.shift()
+        if (!state) {
+            clearInterval(interval)
+            location.reload()
+        }
+        // ({snake, apple} = state)
+        snake = state.snake
+        apple = state.apple
+        drawChessBoard()
+        drawSnake()
+        drawApple()
+    }, difficulty.value / 5)
 }
 
 function generateApple() {
@@ -156,8 +175,6 @@ function generateSnake() {
         [snake[2][0] - 1, snake[2][1]]
     ].filter(coords => !snake.some(part => part[0] == coords[0] && part[1] == coords[1]))
     snake[3] = nextVar[rnd(3)]
-
-    direction = directions[rnd(4)]
 }
 
 function rnd(max) {
