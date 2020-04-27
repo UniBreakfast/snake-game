@@ -1,7 +1,6 @@
 let side = canvas.width / boardWidth.value
 const ctx = canvas.getContext('2d')
 const tick = 200
-
 let score = 0
 let record = 0
 if (localStorage.getItem('record') !== null) {
@@ -21,7 +20,7 @@ let snake = [
 const directions = ['E', 'W', 'S', 'N']
 
 let direction
-
+let moved
 let apple = []
 
 difficulty.onchange = () => {
@@ -44,12 +43,15 @@ boardWidth.onchange = () => {
 }
 
 document.body.onkeydown = function (event) {
+    if (moved) return
     if (event.key == 'ArrowUp' && (direction != "S" || !direction)) direction = "N"
     else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
     else if (event.key == "ArrowRight" && direction != "W") direction = "E"
     else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
     else return
+    moved = true
     if (!interval) interval =  setInterval(() => {
+        moved = false
         history.push({snake: snake.slice(), apple: apple.slice()})
         moveSnake()
         drawChessBoard()
@@ -110,6 +112,7 @@ function moveSnake() {
 }
 
 function replay() {
+    document.body.onkeydown = null
     let interval = setInterval(() => {
         const state = history.shift()
         if (!state) {
