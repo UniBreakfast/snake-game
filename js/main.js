@@ -1,4 +1,6 @@
-let side = canvas.width / boardWidth.value
+if (localStorage.difficulty) difficulty.value = localStorage.difficulty
+if (localStorage.boardWidth) boardWidth.value = localStorage.boardWidth
+let side = Math.floor(canvas.width / boardWidth.value)
 const ctx = canvas.getContext('2d')
 const tick = 200
 let score = 0
@@ -27,13 +29,15 @@ difficulty.onchange = () => {
     difficulty.blur()
     clearInterval(interval)
     interval = 0
+    localStorage.difficulty = difficulty.value
 }
 
 boardWidth.onchange = () => {
     if (boardWidth.value > 40) difficulty.value = 80
     if (boardWidth.value < 20) boardWidth.value = 20
     if (boardWidth.value > 100) boardWidth.value = 100
-    side = Math.round(500 / boardWidth.value)
+    side = Math.floor(500 / boardWidth.value)
+    localStorage.boardWidth = boardWidth.value
     canvas.height = canvas.width = side * boardWidth.value
     drawChessBoard()
     generateSnake()
