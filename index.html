@@ -3,13 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Snake Game</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <header>
         <div>Очки: <span id="scoreSpan">0</span></div>
         <div>Рекорд: <span id="recordSpan">0</span></div>
+        <div>
+            <span>Выбор уровня сложности:</span>
+            <select id="difficulty">
+                <option value="100">Невозможно</option>
+                <option value="200">Сложно</option>
+                <option selected value="380">Нормально</option>
+                <option value="500">Легко</option>
+            </select>
+        </div>
     </header>
     <canvas id="canvas" width="500" height="500"></canvas>
     <script src="js/main.js"></script>

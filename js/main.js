@@ -14,15 +14,20 @@ if (localStorage.getItem('record') !== null) {
 let interval
 
 let snake = [
-    [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2]
+    [2, 2], [3, 2], [4, 2], [5, 2]
 ]
 
-// let snakeHead = [snake[5][0], snake[5][1]]
+const directions = ['E', 'W', 'S', 'N']
 
 let direction = 'E'
 
 let apple = []
-generateApple()
+
+difficulty.onchange = () => {
+    difficulty.blur()
+    clearInterval(interval)
+    interval = 0
+}
 
 document.body.onkeydown = function (event) {
     if (!interval) interval =  setInterval(() => {
@@ -30,7 +35,7 @@ document.body.onkeydown = function (event) {
         drawChessBoard()
         drawSnake()
         drawApple()
-    }, tick)
+    }, +difficulty.value)
     if (event.key == 'ArrowUp' && direction != "S") direction = "N"
     else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
     else if (event.key == "ArrowRight" && direction != "W") direction = "E"
@@ -41,7 +46,7 @@ document.body.onkeydown = function (event) {
 function drawChessBoard() {
     ctx.clearRect(0, 0, 500, 500)
     let color = "#AAD751"
-
+    
     for (let i = 0; i < rowSize; i++) {
         ctx.fillStyle = color = color == "#a2d149" ? "#AAD751" : "#a2d149"
         for (let j = 0; j < rowSize; j++) {
@@ -49,7 +54,7 @@ function drawChessBoard() {
             ctx.fillRect(i * side, j * side, side, side)
         }
     }
-
+    
     ctx.beginPath()
 }
 
@@ -91,8 +96,8 @@ function moveSnake() {
 
 function generateApple() {
     do {
-        apple[0] = Math.floor(Math.random() * rowSize)
-        apple[1] = Math.floor(Math.random() * rowSize)
+        apple[0] = rnd(rowSize)
+        apple[1] = rnd(rowSize)
     } while (snake.find(coords => coords.join() == apple.join()))
 }
 
@@ -115,6 +120,40 @@ function checkScore() {
     }
 }
 
+function generateSnake() {
+    snake[0][0] = rnd(rowSize - 6) + 3
+    snake[0][1] = rnd(rowSize - 6) + 3
+    let nextVar = [
+        [snake[0][0], snake[0][1] + 1],
+        [snake[0][0], snake[0][1] - 1],
+        [snake[0][0] + 1, snake[0][1]],
+        [snake[0][0] - 1, snake[0][1]]
+    ]
+    snake[1] = nextVar[rnd(4)]
+    nextVar = [
+        [snake[1][0], snake[1][1] + 1],
+        [snake[1][0], snake[1][1] - 1],
+        [snake[1][0] + 1, snake[1][1]],
+        [snake[1][0] - 1, snake[1][1]]
+    ].filter(coords => !snake.some(part => part[0] == coords[0] && part[1] == coords[1]))
+    snake[2] = nextVar[rnd(3)]
+    nextVar = [
+        [snake[2][0], snake[2][1] + 1],
+        [snake[2][0], snake[2][1] - 1],
+        [snake[2][0] + 1, snake[2][1]],
+        [snake[2][0] - 1, snake[2][1]]
+    ].filter(coords => !snake.some(part => part[0] == coords[0] && part[1] == coords[1]))
+    snake[3] = nextVar[rnd(3)]
+
+    direction = directions[rnd(4)]
+}
+
+function rnd(max) {
+    return Math.floor(Math.random() * max)
+}
+
 drawChessBoard()
+generateSnake()
 drawSnake()
+generateApple()
 drawApple()
