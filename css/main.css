@@ -5,15 +5,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     flex-direction: column;
     background: #4A752C;
     color: #ffffff;
+    overflow: hidden;
 }
 
 canvas {
     border: 10px solid #578a34;
-    /* background: #aad751; */
+    margin: auto;
 }
 
 header {
@@ -21,9 +21,22 @@ header {
     flex-direction: column;
     margin-bottom: 20px;
     text-align: center;
+    margin-top: 10px;
 }
 
 header div {
     margin-top: 5px;
     font-size: 20px;
+}
+
+#boardWidth {
+    width: 40px;
+}
+
+.canvas-container {
+    width: 500px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

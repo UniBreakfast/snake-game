@@ -1,5 +1,4 @@
-const rowSize = 20
-const side = canvas.width / rowSize
+let side = canvas.width / boardWidth.value
 const ctx = canvas.getContext('2d')
 const tick = 200
 
@@ -29,27 +28,40 @@ difficulty.onchange = () => {
     interval = 0
 }
 
+boardWidth.onchange = () => {
+    if (boardWidth.value > 40) difficulty.value = 80
+    if (boardWidth.value < 20) boardWidth.value = 20
+    if (boardWidth.value > 100) boardWidth.value = 100
+    side = Math.round(500 / boardWidth.value)
+    canvas.height = canvas.width = side * boardWidth.value
+    drawChessBoard()
+    generateSnake()
+    drawSnake()
+    generateApple()
+    drawApple()
+}
+
 document.body.onkeydown = function (event) {
+    if (event.key == 'ArrowUp' && direction != "S") direction = "N"
+    else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
+    else if (event.key == "ArrowRight" && direction != "W") direction = "E"
+    else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
+    else return
     if (!interval) interval =  setInterval(() => {
         moveSnake()
         drawChessBoard()
         drawSnake()
         drawApple()
     }, +difficulty.value)
-    if (event.key == 'ArrowUp' && direction != "S") direction = "N"
-    else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
-    else if (event.key == "ArrowRight" && direction != "W") direction = "E"
-    else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
-    else return
 }
 
 function drawChessBoard() {
     ctx.clearRect(0, 0, 500, 500)
     let color = "#AAD751"
     
-    for (let i = 0; i < rowSize; i++) {
+    for (let i = 0; i < boardWidth.value; i++) {
         ctx.fillStyle = color = color == "#a2d149" ? "#AAD751" : "#a2d149"
-        for (let j = 0; j < rowSize; j++) {
+        for (let j = 0; j < boardWidth.value; j++) {
             ctx.fillStyle = ctx.fillStyle == "#a2d149" ? "#AAD751" : "#a2d149"
             ctx.fillRect(i * side, j * side, side, side)
         }
@@ -96,19 +108,19 @@ function moveSnake() {
 
 function generateApple() {
     do {
-        apple[0] = rnd(rowSize)
-        apple[1] = rnd(rowSize)
+        apple[0] = rnd(boardWidth.value)
+        apple[1] = rnd(boardWidth.value)
     } while (snake.find(coords => coords.join() == apple.join()))
 }
 
 function drawApple() {
     ctx.fillStyle = "red"
-    ctx.fillRect(apple[0] * side + 3, apple[1] * side + 3, side - 6, side - 6)
+    ctx.fillRect(apple[0] * side + 1, apple[1] * side + 1, side - 2, side - 2)
 }
 
 function checkCollision(head) {
     if (snake.find(coords => coords.join() == head.join())) return 'tail'
-    if (head[0] < 0 || head[0] == rowSize || head[1] < 0 || head[1] == rowSize) return 'border'
+    if (head[0] < 0 || head[0] == boardWidth.value || head[1] < 0 || head[1] == boardWidth.value) return 'border'
     if (head.join() == apple.join()) return 'apple'
     return 'empty'
 }
@@ -121,8 +133,8 @@ function checkScore() {
 }
 
 function generateSnake() {
-    snake[0][0] = rnd(rowSize - 6) + 3
-    snake[0][1] = rnd(rowSize - 6) + 3
+    snake[0][0] = rnd(boardWidth.value - 6) + 3
+    snake[0][1] = rnd(boardWidth.value - 6) + 3
     let nextVar = [
         [snake[0][0], snake[0][1] + 1],
         [snake[0][0], snake[0][1] - 1],
