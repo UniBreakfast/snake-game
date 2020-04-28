@@ -20,9 +20,7 @@ let snake = [
 ]
 
 const directions = ['E', 'W', 'S', 'N']
-
-let direction
-let moved
+let direction, moved, nextMove, dash
 let apple = []
 
 difficulty.onchange = () => {
@@ -34,8 +32,9 @@ difficulty.onchange = () => {
 
 boardWidth.onchange = () => {
     if (boardWidth.value > 40) difficulty.value = 80
-    if (boardWidth.value < 20) boardWidth.value = 20
+    if (boardWidth.value < 10) boardWidth.value = 10
     if (boardWidth.value > 100) boardWidth.value = 100
+    boardWidth.blur()
     side = Math.floor(500 / boardWidth.value)
     localStorage.boardWidth = boardWidth.value
     canvas.height = canvas.width = side * boardWidth.value
@@ -47,25 +46,32 @@ boardWidth.onchange = () => {
 }
 
 document.body.onkeydown = function (event) {
-    if (moved) return
+    if (moved) {
+        nextMove = event
+        return
+    }
     if (event.key == 'ArrowUp' && (direction != "S" || !direction)) direction = "N"
     else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
     else if (event.key == "ArrowRight" && direction != "W") direction = "E"
     else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
+    else if ("1234567".includes(event.key)) dash = event.key
+    else if (event.key == " ") dash = 200
     else return
     moved = true
     if (!interval) interval =  setInterval(() => {
-        moved = false
         history.push({snake: snake.slice(), apple: apple.slice()})
         moveSnake()
         drawChessBoard()
         drawSnake()
         drawApple()
+        moved = false
+        if (nextMove) document.body.onkeydown(nextMove)
+        nextMove = null
     }, +difficulty.value)
 }
 
 function drawChessBoard() {
-    ctx.clearRect(0, 0, 500, 500)
+    ctx.clearRect(0, 0, boardWidth.value, boardWidth.value)
     let color = "#AAD751"
     
     for (let i = 0; i < boardWidth.value; i++) {
@@ -75,8 +81,6 @@ function drawChessBoard() {
             ctx.fillRect(i * side, j * side, side, side)
         }
     }
-    
-    ctx.beginPath()
 }
 
 function drawSnake() {
@@ -99,19 +103,25 @@ function moveSnake() {
     if (check == 'empty') {
         snake.shift()
         snake.push(newHead)
+    } else if (check == 'end') {
+        dash = 0
     } else if (check == 'border' || check == 'tail') {
-        canvas.style.borderColor = 'red'
         clearInterval(interval)
         interval = 0
         setTimeout(() => {
-            alert('Вы проиграли!')
             replay()
-        }, 500)
+        }, 300)
+        return
     } else {
         snake.push(newHead)
         generateApple()
         scoreSpan.innerText = ++score
         checkScore()
+    }
+
+    if (dash) {
+        dash--
+        moveSnake()
     }
 }
 
@@ -122,6 +132,7 @@ function replay() {
         if (!state) {
             clearInterval(interval)
             location.reload()
+            return
         }
         // ({snake, apple} = state)
         snake = state.snake
@@ -146,7 +157,9 @@ function drawApple() {
 
 function checkCollision(head) {
     if (snake.find(coords => coords.join() == head.join())) return 'tail'
-    if (head[0] < 0 || head[0] == boardWidth.value || head[1] < 0 || head[1] == boardWidth.value) return 'border'
+    if (head[0] < 0 || head[0] >= boardWidth.value || head[1] < 0 || head[1] >= boardWidth.value) {
+        return dash ? 'end' : 'border'
+    }
     if (head.join() == apple.join()) return 'apple'
     return 'empty'
 }
