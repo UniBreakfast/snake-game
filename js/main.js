@@ -19,6 +19,8 @@ let snake = [
     [2, 2], [3, 2], [4, 2], [5, 2]
 ]
 
+const appleSound = new Audio('apple.mp3')
+
 const directions = ['E', 'W', 'S', 'N']
 let direction, moved, nextMove, dash
 let apple = []
@@ -117,6 +119,8 @@ function moveSnake() {
         generateApple()
         scoreSpan.innerText = ++score
         checkScore()
+        appleSound.currentTime = 0
+        appleSound.play()
     }
 
     if (dash) {
