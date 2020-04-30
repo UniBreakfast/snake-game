@@ -2,7 +2,6 @@ if (localStorage.difficulty) difficulty.value = localStorage.difficulty
 if (localStorage.boardWidth) boardWidth.value = localStorage.boardWidth
 let side = Math.floor(canvas.width / boardWidth.value)
 const ctx = canvas.getContext('2d')
-const tick = 200
 let score = 0
 let record = 0
 if (localStorage.getItem('record') !== null) {
@@ -33,7 +32,7 @@ difficulty.onchange = () => {
 }
 
 boardWidth.onchange = () => {
-    if (boardWidth.value > 40) difficulty.value = 80
+    if (boardWidth.value > 40) difficulty.value = 120
     if (boardWidth.value < 10) boardWidth.value = 10
     if (boardWidth.value > 100) boardWidth.value = 100
     boardWidth.blur()
@@ -52,7 +51,7 @@ document.body.onkeydown = function (event) {
         nextMove = event
         return
     }
-    if (event.key == 'ArrowUp' && (direction != "S" || !direction)) direction = "N"
+    if (event.key == 'ArrowUp' && direction != "S" ) direction = "N"
     else if (event.key == "ArrowDown" && direction != "N") direction = 'S'
     else if (event.key == "ArrowRight" && direction != "W") direction = "E"
     else if (event.key == "ArrowLeft" && direction != "E") direction = "W"
@@ -73,7 +72,6 @@ document.body.onkeydown = function (event) {
 }
 
 function drawChessBoard() {
-    ctx.clearRect(0, 0, boardWidth.value, boardWidth.value)
     let color = "#AAD751"
     
     for (let i = 0; i < boardWidth.value; i++) {
@@ -131,6 +129,7 @@ function moveSnake() {
 
 function replay() {
     document.body.onkeydown = null
+    document.querySelector('header').style.visibility = 'hidden'
     let interval = setInterval(() => {
         const state = history.shift()
         if (!state) {
