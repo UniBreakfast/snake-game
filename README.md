@@ -1,5 +1,7 @@
 # snake-game
 
+Written with a student in course of several lessons.
+
 With specific features:
 
 - custom row/column count (10 - 100)
